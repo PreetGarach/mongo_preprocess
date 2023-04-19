@@ -12,6 +12,8 @@ lat_long = '25.6993,85.1376'
 import pandas as pd
 from geopy.geocoders import Nominatim
 
+geolocator = Nominatim(user_agent="geoapiExercises")
+
 def address_convertor(geolocator, X):
     location = geolocator.reverse(X)
     address = location.raw['address']
