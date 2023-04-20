@@ -9,6 +9,7 @@ from scipy.spatial.distance import euclidean,cdist,pdist
 from sklearn.cluster import KMeans
 import ckwrap
 # from config import geolocator
+import random
 from geopy.geocoders import Nominatim
 
 def address_convertor(geolocator, Lat_Long):
@@ -133,7 +134,22 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
     df['Day_Period'] = df.updatedAt.apply(timeperiod_splitter)
     
     print('mongo_preprocess time period split!')
-    
+    #Memory Percentage
+    if 'memory_used' and ' memory_total' in df.columns:
+        df['memeory_pct'] = df[~(df['memory_used'].isnull() | df['memory_total'].isnull())].groupby('user_id').apply(lambda x: x['memory_used'].sum() / x['memory_total'].sum() * 100).reset_index()
+    #Disk Percentage    
+    if 'disk_available' and 'disk_total' in df.columns:
+        df['disk_pct'] = df[~(df['disk_available'].isnull() | df['disk_total'])].groupby('user_id').apply(lambda x: x['disk_available'].sum() / x['disk_total'].sum() * 100).reset_index()
+    #Pin Fingerprint Ratio
+    if 'pin_or_fingerprint_set':
+        df['count_of_yes'] = df.groupby('user_id')['pin_or_fingerprint_set'].transform(lambda x: (x == 'yes').sum())
+        df['count_of_no'] = df.groupby('user_id')['pin_or_fingerprint_set'].transform(lambda x: (x == 'no').sum())
+
+        df['pin_or_fingerprint_ratio'] = df['count_of_yes'] / (df['count_of_yes'] + df['count_of_no']).reset_index()
+
+        df.drop(['count_of_yes', 'count_of_no'], axis=1, inplace=True)
+        df['pin_or_fingerprint_ratio'].dropna()
+
     # URL
     df.url = df.url.apply(lambda x:"/".join(str(x).split('/')[2:]))
     df.url.replace('',np.nan,inplace=True)
@@ -827,16 +843,18 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
                 'entries_timing_class_0', 'entries_timing_class_1', 'entries_timing_class_2', 
                 'time_spent_location_class_0', 'time_spent_location_class_1', 'time_spent_location_class_2', 
                 'total_timings','address_county_specific', 'address_suburb_specific', 'address_city_specific', 
-                'address_town_specific', 'address_village_specific', 'address_city_district_specific', 'address_neighbourhood_specific']
+                'address_town_specific', 'address_village_specific', 'address_city_district_specific', 'address_neighbourhood_specific',
+                'memory_pct','disk_pct','pin_or_fingerprint_ratio']
 
     print('mongo_preprocess reached_till_final_columns!')
 
     to_be_handled_cols = [i for i in final_cols if i not in df.columns]
     df[to_be_handled_cols] = 0
+    final_cols.append('user_id')
     removal_columns = [i for i in df.columns if i not in final_cols]
     df = df[df.user_id == user_to_underwrite].drop(removal_columns,axis=1).drop_duplicates().reset_index(drop=True)
     return df.iloc[0].to_dict()
- 
+
 ##################################################################################################################################################################
 
 
@@ -907,22 +925,22 @@ mongo_client = MongoClient("mongodb://localhost/fury?ssl=false&authSource=admin"
 # mongo_client = MongoClient("mongodb://admin:8K4E5A6U.oMAtw@localhost/fury?ssl=false&authSource=admin",port = 27020)
 # mongo_client = MongoClient(connection_URI,port = 27017)
 
-df = pd.read_csv('profitability_target.csv')
-# already = pd.read_csv('logs_DB_processed.csv')
-# print(already.user_id.nunique())
+df = pd.read_csv('profitability_target_upd.csv')
+already = pd.read_csv('logs_DB_processed_19042023.csv')
+print(already.user_id.nunique())
 user_list = df.user_id.to_list()
 if 1 in user_list:
     user_list.remove(1)
 
-# for i in already.user_id:
-#     if i in user_list:
-#         user_list.remove(i)
+for i in already.user_id:
+    if i in user_list:
+        user_list.remove(i)
 
 print('total users:\t',df.shape)
 print('to be found users:\t',len(user_list))
 
-# ndf = already.copy()
-ndf = pd.DataFrame()
+ndf = already.copy()
+# ndf = pd.DataFrame()
 
 # print(ndf.shape)
 
@@ -954,5 +972,5 @@ for i in range(0,len(user_list),1):
         sleep(100)
     if i+1%10==0:
         sleep(10)
-    break
+    # break
 ndf.drop_duplicates().to_csv('logs_DB_processed.csv')
