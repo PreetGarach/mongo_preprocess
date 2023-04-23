@@ -40,60 +40,122 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
         df.drop('battery-level',axis=1,inplace=True)
     else:
         df.rename(columns={'battery-level':'battery'},inplace=True)
+
     #Pin or fingerprint set
-    if ('pin-or-fingerprint-set' in df.columns) and ('Pinorfingerprintset' in df.columns) and ('Pin Or Fingerprint Set' in df.columns):
-        df['pin_or_finger_print'] = df['pin_or_finger_print'].fillna(df['pin-or-fingerprint-set'])
-        df['pin_or_finger_print'] = df['pin_or_finger_print'].fillna(df['Pinorfingerprintset'])
-        df['pin_or_finger_print'] = df['pin_or_finger_print'].fillna(df['Pin Or Fingerprint Set'])
-        df.drop(['pin-or-fingerprint-set','Pinorfingerprintset','Pin Or Fingerprint Set'], axis=1, inplace=True)
+    if 'pin_or_fingerprint_set' not in df.columns:
+        df['pin_or_fingerprint_set'] = np.nan
+    if 'pin-or-fingerprint-set' in df.columns:
+        df['pin_or_fingerprint_set'] = df['pin_or_fingerprint_set'].fillna(df['pin-or-fingerprint-set'])
+        df.drop('pin-or-fingerprint-set',axis=1, inplace=True)
+    if 'Pinorfingerprintset' in df.columns:
+        df['pin_or_fingerprint_set'] = df['pin_or_fingerprint_set'].fillna(df['Pinorfingerprintset'])
+        df.drop('Pinorfingerprintset',axis=1, inplace=True)
+    if 'Pin Or Fingerprint Set' in df.columns:
+        df['pin_or_fingerprint_set'] = df['pin_or_fingerprint_set'].fillna(df['Pin Or Fingerprint Set'])
+        df.drop('Pin Or Fingerprint Set',axis=1, inplace=True)
     else:
         df.rename(columns={'pin-or-fingerprint-set' : 'pin_or_fingerprint_set',
                            'Pinorfingerprintset' : 'pin_or_fingerprint_set',
                            'Pin Or Fingerprint Set' : 'pin_or_fingerprint_set'}, inplace=True)
+    # df.drop(['pin-or-fingerprint-set','Pinorfingerprintset','Pin Or Fingerprint Set'], axis=1, inplace=True)
     #Memory Used
-    if ('memory-used' in df.columns) and ('Memoryused' in df.columns) and ('Memory Used' in df.columns):
+    if 'memory_used' not in df.columns:
+        df['memory_used'] = np.nan
+    if 'memory-used' in df.columns:
         df["memory_used"] = df["memory_used"].fillna(df['memory-used'])
+        df.drop('memory-used',axis=1, inplace=True)
+    if 'Memoryused' in df.columns: 
         df['memory_used'] = df['memory_used'].fillna(df['Memoryused'])
+        df.drop('Memoryused',axis=1, inplace=True)
+    if 'Memory Used' in df.columns:
         df['memory_used'] = df['memory_used'].fillna(df['Memory Used'])
-        df.drop(['memory-used','Memoryused','Memory Used'], axis=1, inplace=True)
+        df.drop('Memory Used',axis=1, inplace=True)
     else:
         df.rename(columns={"memory-used" : "memory_used",
                            "Memoryused" : "memory_used",
                            "Memory used" : "memory_used"}, inplace=True)
 
     #Memory total
-    if ('memory-total' in df.columns) and ('Memorytotal' in df.columns) and ('Memory Total' in df.columns):
+    if 'memory_total' not in df.columns:
+        df['memory_total'] = np.nan
+    if 'memory-total' in df.columns: 
         df["memory_total"] = df["memory_total"].fillna(df['memory-total'])
+        df.drop('memory-total', axis=1, inplace=True)
+    if 'Memorytotal' in df.columns: 
         df['memory_total'] = df['memory_total'].fillna(df['Memorytotal'])
+        df.drop('Memorytotal', axis=1, inplace=True)
+    if 'Memory Total' in df.columns:
         df['memory_total'] = df['memory_total'].fillna(df['Memory Total'])
-        df.drop(['memory-total','Memorytotal','Memory total'], axis=1, inplace=True)
+        df.drop('Memory Total', axis=1, inplace=True)
     else:
         df.rename(columns={"memory-total" : "memory_total",
                            "Memorytotal" : "memory_total",
                            "Memory total" : "memory_total"}, inplace=True)
 
     # Disk Total
-    if ('disk-total' in df.columns) and ('Disktotal' in df.columns) and ('Disk Total' in df.columns):
+    if 'disk_total' not in df.columns:
+        df['disk_total'] = np.nan
+    if 'disk-total' in df.columns: 
         df["disk_total"] = df["disk_total"].fillna(df['disk-total'])
+        df.drop('disk-total', axis=1, inplace=True)
+    if 'Disktotal' in df.columns: 
         df['disk_total'] = df['disk_total'].fillna(df['Disktotal'])
+        df.drop('Disktotal', axis=1, inplace=True)
+    if 'Disk Total' in df.columns:
         df['disk_total'] = df['disk_total'].fillna(df['Disk Total'])
-        df.drop(['disk-total','Disktotal','Disk Total'], axis=1, inplace=True)
+        df.drop('Disk Total', axis=1, inplace=True)
     else:
         df.rename(columns={"disk-total" : "disk_total",
                            "Disktotal" : "disk_total",
                            "Disk Total" : "disk_total"}, inplace=True)
 
     # Disk available
-    if ('disk-available' in df.columns) and ('Diskavailable' in df.columns) and ('Disk Available' in df.columns):
+    if 'disk_available' not in df.columns:
+        df['disk_available'] = np.nan
+    if 'disk-available' in df.columns: 
         df["disk_available"] = df["disk_available"].fillna(df['disk-available'])
+        df.drop('disk-available', axis=1, inplace=True)
+    if 'Diskavailable' in df.columns: 
         df['disk_available'] = df['disk_available'].fillna(df['Diskavailable'])
+        df.drop('Diskavailable', axis=1, inplace=True)
+    if 'Disk Available' in df.columns:
         df['disk_available'] = df['disk_available'].fillna(df['Disk Available'])
-        df.drop(['disk-available','Diskavailable','Disk Available'], axis=1, inplace=True)
+        df.drop('Disk Available', axis=1, inplace=True)
     else:
         df.rename(columns={"disk-available" : "disk_available",
                            "Diskavailable" : "disk_available",
                            "Disk Available" : "disk_available"}, inplace=True)
     
+    # Speed
+    if 'speed' not in df.columns:
+        df['speed'] = np.nan
+    if 'Speed' in df.columns:
+        df['speed'] = df['speed'].fillna(df['Speed'])
+        df.drop('Speed', axis=1, inplace=True)
+    
+    # Altitude
+    if 'altitude' not in df.columns:
+        df['altitude'] = np.nan
+    if 'Altitude' in df.columns:
+        df['altitude'] = df['altitude'].fillna(df['Altitude'])
+        df.drop('Altitude', axis=1, inplace=True)        
+
+    # Battery State
+    if 'battery_state' not in df.columns:
+        df['battery_state'] = np.nan
+    if 'battery-state' in df.columns: 
+        df["battery_state"] = df["battery_state"].fillna(df['battery-state'])
+        df.drop('battery-state', axis=1, inplace=True)
+    if 'Batterystate' in df.columns: 
+        df['battery_state'] = df['battery_state'].fillna(df['Batterystate'])
+        df.drop('Batterystate', axis=1, inplace=True)
+    if 'Battery State' in df.columns:
+        df['battery_state'] = df['battery_state'].fillna(df['Battery State'])
+        df.drop('Battery State', axis=1, inplace=True)
+    else:
+        df.rename(columns={"disk-available" : "battery_state",
+                           "Diskavailable" : "battery_state",
+                           "Disk Available" : "battery_state"}, inplace=True)
     # ['_id', 'user_id', 'url', 'device', 'build', 'os-version', 'brand',
     #    'model', 'platform', 'preferred-locale', 'battery-level',
     #    'battery-state', 'headphones-connected', 'airplane-mode',
@@ -110,7 +172,8 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
     
     needed_columns = ['_id', 'user_id', 'platform', 'build', 'brand', 'battery',
                         'carrier', 'updatedAt', 'os-version', 'preferred-locale',
-                        'device', 'latitude', 'longitude', 'url', 'pin_or_fingerprint_set', 'memory_pct', 'disk_pct']
+                        'device', 'latitude', 'longitude', 'url', 'disk_total', 'disk_available',
+                        'memory_used','memory_total', 'pin_or_fingerprint_set', 'speed', 'battery_state','altitude']
     needed_columns = [i for i in needed_columns if i in df.columns]
     
     df = df[needed_columns]
@@ -136,20 +199,41 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
     print('mongo_preprocess time period split!')
     #Memory Percentage
     if 'memory_used' and ' memory_total' in df.columns:
-        df['memeory_pct'] = df[~(df['memory_used'].isnull() | df['memory_total'].isnull())].groupby('user_id').apply(lambda x: x['memory_used'].sum() / x['memory_total'].sum() * 100).reset_index()
-    #Disk Percentage    
+        df['memory_pct'] = df[~(df['memory_used'].isnull() | df['memory_total'].isnull())].groupby('user_id').apply(lambda x: x['memory_used'].sum() / x['memory_total'].sum() * 100).reset_index()
+    #Disk Percentage
     if 'disk_available' and 'disk_total' in df.columns:
-        df['disk_pct'] = df[~(df['disk_available'].isnull() | df['disk_total'])].groupby('user_id').apply(lambda x: x['disk_available'].sum() / x['disk_total'].sum() * 100).reset_index()
+        df['disk_available'] = df['disk_available'].astype(float)
+        df['disk_total'] = df['disk_total'].astype(float)
+        df['disk_pct'] = df.user_id.map(
+            df[~(df['disk_available'].isnull() | df['disk_total'].isnull())].groupby('user_id').agg(
+            disk_available_sum=('disk_available', 'sum'),
+            disk_total_sum=('disk_total', 'sum')
+            ).apply(lambda x: x['disk_available_sum'] / x['disk_total_sum'] * 100, axis=1))
+        # df['disk_pct'] = df[~(df['disk_available'].isnull() | df['disk_total'].isnull())].groupby('user_id').apply(lambda x: x['disk_available'].sum() / x['disk_total'].sum() * 100).reset_index()
+    # print(df.columns)
+
     #Pin Fingerprint Ratio
-    if 'pin_or_fingerprint_set':
-        df['count_of_yes'] = df.groupby('user_id')['pin_or_fingerprint_set'].transform(lambda x: (x == 'yes').sum())
-        df['count_of_no'] = df.groupby('user_id')['pin_or_fingerprint_set'].transform(lambda x: (x == 'no').sum())
+    if 'pin_or_fingerprint_set' in df.columns:
+        df['count_of_yes'] = df.user_id.map(df.groupby('user_id')['pin_or_fingerprint_set'].apply(lambda x: (x == 'yes').sum()))
+        df['count_of_total'] = df[(df.user_id == user_to_underwrite) & (df.pin_or_fingerprint_set.notnull())].shape[0]
+        df['pin_or_fingerprint_ratio'] = df['count_of_yes']/df['count_of_total'].replace(0,1)
 
-        df['pin_or_fingerprint_ratio'] = df['count_of_yes'] / (df['count_of_yes'] + df['count_of_no']).reset_index()
-
-        df.drop(['count_of_yes', 'count_of_no'], axis=1, inplace=True)
-        df['pin_or_fingerprint_ratio'].dropna()
-
+        df.drop(['count_of_yes', 'count_of_total'], axis=1, inplace=True)
+        df['pin_or_fingerprint_ratio'].fillna(1,inplace=True)
+    # Speed
+    if 'speed' in df.columns:
+        df['speed'] = df['speed'].astype(float)
+        df['speed'] = df.groupby('device')['speed'].transform(lambda x: x.fillna(x.mean()))
+        df['speed'] = df.groupby('user_id')['speed'].transform(lambda x: x.fillna(x.mean()))
+        df['speed'] = df['speed'].fillna(0)
+    
+    # Altitude
+    if 'altitude' in df.columns:
+        df['altitude'] = df['altitude'].astype(float)
+        df['altitude'] = df.groupby('device')['altitude'].transform(lambda x: x.fillna(x.mean()))
+        df['altitude'] = df.groupby('user_id')['altitude'].transform(lambda x: x.fillna(x.mean()))
+        df['altitude'] = df['altitude'].fillna(0)
+    
     # URL
     df.url = df.url.apply(lambda x:"/".join(str(x).split('/')[2:]))
     df.url.replace('',np.nan,inplace=True)
@@ -386,7 +470,7 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
         classwise_ts_df.fillna(0,inplace=True)
         df = pd.merge(df,classwise_ts_df,on='user_id')
 
-        ### Location and Class wise Battery
+        ### Location and Time Class wise Battery
         try:
             m = df.groupby(['user_id','location_class','timing_class'])[['battery']].median().reset_index().fillna(0)
             m = pd.pivot(m,index=['user_id','location_class'],columns='timing_class')['battery'].reset_index()
@@ -423,6 +507,30 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
             m.columns = m_col_list
             df = pd.merge(df, m, on='user_id')
 
+        #############################################################################################################
+        ### Location Class wise Speed
+        if 'speed' in df.columns:
+            m = df.groupby(['user_id','location_class'])[['speed']].median().reset_index().fillna(0)
+            m = pd.pivot(m,index='user_id', columns='location_class')['speed'].reset_index()
+            # renaming_columns 
+            m_col_list = ['user_id'] 
+            for i in m.iloc[:,1:].columns:
+                m_col_list.append('speed_location_'+i)
+            m.columns = m_col_list
+            df = pd.merge(df, m, on='user_id')
+
+        #############################################################################################################
+        ### Location Class wise Altitude
+        if 'altitude' in df.columns:
+            m = df.groupby(['user_id','location_class'])[['altitude']].median().reset_index().fillna(0)
+            m = pd.pivot(m,index='user_id', columns='location_class')['altitude'].reset_index()
+            # renaming_columns 
+            m_col_list = ['user_id'] 
+            for i in m.iloc[:,1:].columns:
+                m_col_list.append('altitude_location_'+i)
+            m.columns = m_col_list
+            df = pd.merge(df, m, on='user_id')
+
         ### Location wise Entries
 
         m = df.groupby(['user_id','location_class'])[['_id']].count().reset_index().fillna(0)
@@ -447,8 +555,29 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
         m.columns = m_col_list
         df = pd.merge(df, m, on='user_id')
 
-    ### Timing wise Entries
+    ### Time class wise Speed
+    if 'speed' in df.columns:
+        m = df.groupby(['user_id','timing_class'])[['speed']].median().reset_index().fillna(0)
+        m = pd.pivot(m,index='user_id', columns='timing_class')['speed'].reset_index()
+        # renaming_columns 
+        m_col_list = ['user_id'] 
+        for i in m.iloc[:,1:].columns:
+            m_col_list.append('speed_time_'+i)
+        m.columns = m_col_list
+        df = pd.merge(df, m, on='user_id')
 
+    ### Time class wise Altitude
+    if 'altitude' in df.columns:
+        m = df.groupby(['user_id','timing_class'])[['altitude']].median().reset_index().fillna(0)
+        m = pd.pivot(m,index='user_id', columns='timing_class')['altitude'].reset_index()
+        # renaming_columns 
+        m_col_list = ['user_id'] 
+        for i in m.iloc[:,1:].columns:
+            m_col_list.append('altitude_time_'+i)
+        m.columns = m_col_list
+        df = pd.merge(df, m, on='user_id')
+
+    ### Timing wise Entries
     m = df.groupby(['user_id','timing_class'])[['_id']].count().reset_index().fillna(0)
     if m.shape[0]>0:
         m = pd.pivot(m,index='user_id', columns='timing_class', values='_id').reset_index()
@@ -837,14 +966,18 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
                 'battery_location_0_timing_0', 'battery_location_0_timing_1', 'battery_location_0_timing_2', 
                 'battery_location_1_timing_0', 'battery_location_1_timing_1', 'battery_location_1_timing_2', 
                 'battery_location_2_timing_0', 'battery_location_2_timing_1', 'battery_location_2_timing_2', 
-                'battery_location_class_0', 'battery_location_class_1', 'battery_location_class_2', 
+                'battery_location_class_0', 'battery_location_class_1', 'battery_location_class_2',
                 'battery_timing_class_0', 'battery_timing_class_1', 'battery_timing_class_2', 
                 'entries_location_class_0', 'entries_location_class_1', 'entries_location_class_2', 
                 'entries_timing_class_0', 'entries_timing_class_1', 'entries_timing_class_2', 
                 'time_spent_location_class_0', 'time_spent_location_class_1', 'time_spent_location_class_2', 
                 'total_timings','address_county_specific', 'address_suburb_specific', 'address_city_specific', 
                 'address_town_specific', 'address_village_specific', 'address_city_district_specific', 'address_neighbourhood_specific',
-                'memory_pct','disk_pct','pin_or_fingerprint_ratio']
+                'memory_pct','disk_pct','pin_or_fingerprint_ratio','battery_state', 'speed', 'altitude',
+                'speed_location_class_0', 'speed_location_class_1', 'speed_location_class_2',
+                'altitude_location_class_0', 'altitude_location_class_1', 'altitude_location_class_2',
+                'speed_timing_class_0','speed_timing_class_1','speed_timing_class_2',
+                'altitude_timing_class_0','altitude_timing_class_1', 'altitude_timing_class_2']
 
     print('mongo_preprocess reached_till_final_columns!')
 
@@ -853,6 +986,11 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
     final_cols.append('user_id')
     removal_columns = [i for i in df.columns if i not in final_cols]
     df = df[df.user_id == user_to_underwrite].drop(removal_columns,axis=1).drop_duplicates().reset_index(drop=True)
+    print(df)
+
+    print('1242356778o7867r6ydgfvsedxfyserdgxfc!#!@$@%Y'*10)
+
+    print([i for i in df.columns if i in ['memory_pct','disk_pct','pin_or_fingerprint_ratio']])
     return df.iloc[0].to_dict()
 
 ##################################################################################################################################################################
@@ -926,8 +1064,8 @@ mongo_client = MongoClient("mongodb://localhost/fury?ssl=false&authSource=admin"
 # mongo_client = MongoClient(connection_URI,port = 27017)
 
 df = pd.read_csv('profitability_target_upd.csv')
-already = pd.read_csv('logs_DB_processed_19042023.csv')
-print(already.user_id.nunique())
+already = pd.read_csv('logs_DB_processed.csv')
+# print(already.user_id.nunique())
 user_list = df.user_id.to_list()
 if 1 in user_list:
     user_list.remove(1)
@@ -940,7 +1078,7 @@ print('total users:\t',df.shape)
 print('to be found users:\t',len(user_list))
 
 ndf = already.copy()
-# ndf = pd.DataFrame()
+ndf = pd.DataFrame()
 
 # print(ndf.shape)
 
