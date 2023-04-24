@@ -140,22 +140,6 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
         df['altitude'] = df['altitude'].fillna(df['Altitude'])
         df.drop('Altitude', axis=1, inplace=True)        
 
-    # Battery State
-    if 'battery_state' not in df.columns:
-        df['battery_state'] = np.nan
-    if 'battery-state' in df.columns: 
-        df["battery_state"] = df["battery_state"].fillna(df['battery-state'])
-        df.drop('battery-state', axis=1, inplace=True)
-    if 'Batterystate' in df.columns: 
-        df['battery_state'] = df['battery_state'].fillna(df['Batterystate'])
-        df.drop('Batterystate', axis=1, inplace=True)
-    if 'Battery State' in df.columns:
-        df['battery_state'] = df['battery_state'].fillna(df['Battery State'])
-        df.drop('Battery State', axis=1, inplace=True)
-    else:
-        df.rename(columns={"disk-available" : "battery_state",
-                           "Diskavailable" : "battery_state",
-                           "Disk Available" : "battery_state"}, inplace=True)
     # ['_id', 'user_id', 'url', 'device', 'build', 'os-version', 'brand',
     #    'model', 'platform', 'preferred-locale', 'battery-level',
     #    'battery-state', 'headphones-connected', 'airplane-mode',
@@ -986,11 +970,14 @@ def mongo_preprocess(user_to_underwrite,cursor_users,cursor_devices):
     final_cols.append('user_id')
     removal_columns = [i for i in df.columns if i not in final_cols]
     df = df[df.user_id == user_to_underwrite].drop(removal_columns,axis=1).drop_duplicates().reset_index(drop=True)
-    print(df)
+    # print(df)
 
-    print('1242356778o7867r6ydgfvsedxfyserdgxfc!#!@$@%Y'*10)
+    # print('1242356778o7867r6ydgfvsedxfyserdgxfc!#!@$@%Y'*10)
 
-    print([i for i in df.columns if i in ['memory_pct','disk_pct','pin_or_fingerprint_ratio']])
+    # print([i for i in df.columns if i in ['memory_pct','disk_pct','pin_or_fingerprint_ratio','speed_location_class_0', 'speed_location_class_1', 'speed_location_class_2',
+    #             'altitude_location_class_0', 'altitude_location_class_1', 'altitude_location_class_2',
+    #             'speed_timing_class_0','speed_timing_class_1','speed_timing_class_2',
+    #             'altitude_timing_class_0','altitude_timing_class_1', 'altitude_timing_class_2']])
     return df.iloc[0].to_dict()
 
 ##################################################################################################################################################################
@@ -1064,20 +1051,20 @@ mongo_client = MongoClient("mongodb://localhost/fury?ssl=false&authSource=admin"
 # mongo_client = MongoClient(connection_URI,port = 27017)
 
 df = pd.read_csv('profitability_target_upd.csv')
-already = pd.read_csv('logs_DB_processed.csv')
+# already = pd.read_csv('logs_DB_processed.csv')
 # print(already.user_id.nunique())
 user_list = df.user_id.to_list()
 if 1 in user_list:
     user_list.remove(1)
 
-for i in already.user_id:
-    if i in user_list:
-        user_list.remove(i)
+# for i in already.user_id:
+#     if i in user_list:
+#         user_list.remove(i)
 
 print('total users:\t',df.shape)
 print('to be found users:\t',len(user_list))
 
-ndf = already.copy()
+# ndf = already.copy()
 ndf = pd.DataFrame()
 
 # print(ndf.shape)
